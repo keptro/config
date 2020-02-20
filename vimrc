@@ -48,7 +48,7 @@ map tl :tabnext<CR>
 
 map sv <C-w>t<C-w>H
 map sh <C-w>t<C-w>K
-
+noremap <C-f> :FZF<CR>
 
 
 
