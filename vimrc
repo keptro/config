@@ -67,6 +67,8 @@ Plug 'luochen1990/rainbow'
 Plug 'godlygeek/tabular'
 Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
 Plug 'sheerun/vim-polyglot'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 call plug#end()
 
 "color snazzy
