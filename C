@@ -1,4 +1,4 @@
-author : keptro
+读《C和指针》有感
 关于c的一些零碎知识
 0.	用到“指针”时一定要思考一些问题
 {
@@ -269,6 +269,8 @@ int main(){
 其中：*p->d是错误的因为d是指针且被赋值为0（其实就是NULL）对NULL进行解引用是不行的
 
 }
+iiiiiii)结构体可以作为参数传递给函数，也可以作为返回值从函数返回，使用指针传递效率更高
+        在结构指针参数的声明中可以加上const关键字防止函数修改指针所指向的结构
 22.关于位段
 位段相当于自己创立一个变量自己定义它占多少字节也就是指定它占多少位
 其定义的方式和定义结构体类似,只有两个不同
@@ -283,4 +285,179 @@ struct CHAR {
 struct CHAR ch1;
 :暂时不知道有什么用
 
-23.
+23.联合
+	1.联合的使用方式和结构体类似只需将struct改成union即可,但二者却有很大的不同
+ 	  联合的所有成员引用的是内存中的相同位置,也就是说如果你想在不同时刻把不同
+	  的东西存储于同一个位置,可以使用联合实现
+	2.声明后联合所占的字节数看的是联合成员中最大的那个 
+
+     union{
+	  	float f;
+		int i;
+		int c[3];
+	}fi;
+
+	int main(){
+		//fi.f = 3.1415;
+		printf("%ld\n",sizeof(fi.c));
+		printf("%ld\n",sizeof(fi.f));
+	    printf("%p\n",&fi.c);
+     	printf("%p\n",&fi.f);
+		*******************
+		* 运行结果:       *         
+		* 12              *
+		* 4               *  
+		* 0x5652fbb86018  *            
+    	* 0x5652fbb86018  *
+		*******************
+	}
+   其结果表示,联合体的所有成员的地址都是一样的,也就是说当你改变一个成员的值时,所有
+   成员都会改变,当你使用成员f,则这个字就作为浮点值访问,当使用成员i时,这个字被作为
+   整型处理。
+24 动态内存分配
+  malloc,realloc,calloc
+  1.malloc与calloc的区别
+   1)calloc在返回内存的指针之前把它初始化为0
+   2)使用calloc时需要包括参数(所需的元素数量和每个元素的字节数)
+  2.realloc:用于修改一个原先已经分配的内存块大小
+   1)如果用于扩大,则原先的内存块的内容依然保留,新增的内存添加到原先的内存块的后面,注意:新内存并未进行初始化
+   2)如果用于缩小,则内存块尾部的b部分内存将会被拿掉,保留剩余部分
+   3)如果原先的内存块无法改变大小,realloc将分配另一块正确大小的内存,并把原先的那块内存的内容复制到新的块上,所以使用realloc后,你不能再使用指向旧内存的指针,而是应该改用realloc所返回的新指针
+		int *pi;
+		//pi = malloc(100); 不推荐使用
+		pi = malloc(25 * sizeof(int));//可移植性更高
+	   /*
+	   **为指针分配了内存(合法化了,自己可以使用,而不是指向不明确的地方)
+	   */
+	   
+	// 下面对该指针进行使用
+	   int *q,i;
+	   q = pi;
+	   for (i = 0; i < 25; ++i) {
+			   *q++ = 0;
+	   }
+	   //也可以是这样
+	  for (i = 0; i < 25; ++i) {
+	  		q[i] = 0;
+	  }
+上述例子我们拥有了指向100个字节的指针,这块内存也可以被当作25个整型元素的数组,因为pi是指向整型的指针
+  常见的动态内存错误
+   0)忘记检查所请求的内存是否成功分配
+   1)对NULL指针进行解引用操作
+   2)对分配的内存进行操作是越界
+   3)释放了并非动态分配的内存
+   4)试图释放一块动态分配的内存的一部分
+   5)使用了被释放后的动态内存
+  最常见的就是(0)的错误了
+  解决办法分配完内存后利用if来判断如下:
+  		if(pi == NULL)
+			printf("Can't get memory for that many values");
+			exit(EXIT_FAILURE);
+  还有就是使用free时:
+  	传递给free的指针必须是一个从calloc,malloc,realloc函数返回的指针
+	释放一块内存的一部分是不允许的.动态分配的内存必须整块一起释放,如果一定要
+	释放一部分,使用realloc函数可以有效的释放尾部的部分内存
+  下面是内存动态分配的实例:
+   1.
+	 /*
+	 ** 该函数由qsort调用，用于比较整型值
+	 */
+int compare_intergers(void const *a,void const *b){
+	 register int const *pa = a;
+	 register int const *pb = b;
+	 return *pa > *pb ? 1 : *pa < *pb ? -1 :0;
+	 /*
+	   return里的东西等价于
+		if (*pa > *pb) {
+			return 1;
+			else{
+				if(*pa < *pb){
+					return -1;
+				}
+			      else{
+				  return 0;
+				  }
+			}		
+		} 
+      很明显当判断的条件比较冗长时使用第一种方式更为合适
+	 */
+}
+
+int main(int argc, char *argv[])
+{
+		int *array;
+		int n_values;
+		int i;
+     
+	 /*
+	 **观察共有多少个值
+	 */
+		printf("How many values are there?\n");
+		if (scanf("%d",&n_values) != 1 || n_values <= 0) {
+			printf("Illegal number of values.\n");
+			exit(EXIT_FAILURE);
+		}
+ 		/*
+		** scanf("%d",&n_values) != 1 它的返回值是成功键入的个数
+		** 也就是说如果键入失败那么返回值就是0,成功键入2个数返回的就是2
+		*/
+		
+	 /*
+	 **分配内存，用于存储这些值,并且对分配是否成功进行了判断
+	 */
+  	  	array = malloc(n_values * sizeof(int));
+		if (array == NULL) {
+			 printf("Can't get memory for that many values.\n");	
+			 exit(EXIT_FAILURE);
+		}	
+
+	 /*
+	 **读取这些值
+	 */
+		for (i = 0; i < n_values; ++i) {
+			if (scanf("%d",array + i) != 1) {
+					printf("Error reading value #%d\n",i );
+					free(array);
+					exit(EXIT_FAILURE);
+			}
+		}
+
+	 /*
+	 **对这些值进行排序
+	 */
+	  qsort(array,n_values,sizeof(int),compare_intergers);
+	  
+	 /*
+	 **打印这些值
+	 */
+	  for (i = 0; i < n_values; ++i) {
+			  printf("array[i] = %d\n", array[i]);
+	  }
+
+	 /*
+	 **释放内存并退出
+	 */
+	  free(array);
+		return 0;
+}
+  2.	
+
+/*
+**用动态分配内存制作一个字符串的拷贝.注意:调用程序应该负责检查
+**这块内存是否成功分配!
+*/
+
+char * strdup(char const *string){
+	char *new_string;
+	/*
+	**请求足够长度的内存,用于存储字符串和它结尾的NULL字节
+	*/
+	new_string = malloc(strlen(string) +1 );
+	/*
+	**如果分配成功,就复制字符串
+	*/
+	if (new_string != NULL) {
+		strcpy(new_string,string);	
+	}
+	return new_string;
+}
