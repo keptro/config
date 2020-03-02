@@ -19,6 +19,7 @@ set smartindent
 set cindent
 set novisualbell
 set encoding=utf-8
+set scrolloff=5
 let mapleader=" "
 map Q :q<CR>
 map S :w<CR>
