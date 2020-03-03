@@ -63,6 +63,7 @@ Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': './install --bin' }
 Plug 'shougo/neocomplete.vim'     
 Plug 'luochen1990/rainbow'
 Plug 'godlygeek/tabular'
