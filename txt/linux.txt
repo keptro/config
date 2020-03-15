@@ -1,0 +1,738 @@
+   
+                               Linux
+
+0.连接符
+<1> -a and 逻辑与 -o or 逻辑或
+<2> -exec连接执行符  固定格式: find.....-exec 命令 {} \; ({}表示find查询的结果 \转义符 使符号命令使用本身的含义 ;分号表示结束)
+                                        -ok （与-exec的区别-ok会询问你是否确认）
+1.文件类型
+(1)d -目录directory
+(2)- 二进制文件
+(3)l 软链接文件link
+
+2.用户
+第一类用户-所有者 u-user
+第二类用户-所属组 g-group
+第三类用户-其他人 o-others
+
+3.文件处理命令:
+
+(1)ls(原意:list)
+
+功能描述：显示目录文件
+语法：  ls [选项] [文件或目录]
+      选项： -a(原意:all) 显示所有文件.包括隐藏文件
+             -l(原意:long)详细信息显示
+             -i（原意：inode）查看文件节点数，任何一个文件都会有
+             -d(原意:directory)查看目录属性
+          选项之间可以叠加 比如:-ld -al...
+
+eg1.troke@troke-virtual-machine:~$ ls -l /
+    drwxr-xr-x   2 root root       4096 12月 27 17:51 bin
+   /* d表示文件类型 
+      r-read读,w-write写,x-execute执行
+        rwx                   r-x                   r-x                2      root    root     4096
+ 第一类用户有什么权限  第二类用户有什么权限  第三类用户有什么权限   硬链接数  所有者  所属组  文件大小
+   */
+
+(2)cd(原意:change directory)
+功能描述:切换目录
+语法: cd[目录]
+eg.  cd /  切换到根目录
+     cd .. 回到上一级目录 
+ 
+(3)pwd(原意:print working directory)
+功能描述:显示当前所在的工作目录
+语法: pwd
+
+(4)touch(原意:touch)
+功能描述:创建空文件
+语法: touch[文件名]
+eg.   touch newfile
+
+(5)mkdir(原意:make directories)
+功能描述:创建新目录
+语法: mkdir[目录名]
+eg.  mkdir newdir
+
+(6)cp(原意:copy)
+功能描述:复制文件或目录
+语法:  cp -R [源文件或目录][目的目录]
+          -R 复制目录(复制一个目录的时候必须使用选项-R,复制文件用cp即可)
+eg.   cp file1 file2 dir1 
+      将文件file1,file2 复制到目录dir1
+      cp -R dir1 dir2 
+      将dir1下的所有文件及子目录复制到dir2
+
+(7)mv(原意:move)
+功能描述: 移动文件,更名
+语法 mv[源文件或目录][目的目录]
+eg.  mv file1 file3
+    将当前目录下文件file1 更名为file3
+     mv file2 dir2
+    将文件file2移动到目录dir2下
+
+(8)rm(原意:remove)
+功能描述:删除文件
+语法: rm -r[文件或目录]
+         -r 删除目录(加上-r可以删除目录,不加就是删除文件) 
+
+(9)cat(原意：concatenate and display files)
+功能描述：显示文件内容  适合查看一些内容比较少的文件
+语法：cat [文件名]
+eg. cat /etc/services  
+
+(10)more
+功能描述:分页显示文件内容
+语法: more [文件名]
+      (空格)或f  显示下一页
+      (Enter)    显示下一行
+      q或Q       退出
+eg.  more /etc/services
+
+(11)head
+功能描述:查看文件的前几行
+语法: head -num [文件名]
+      -num 显示文件的前num行
+eg.  head -20 /etc/services   
+
+(12)tail 
+功能描述:查看文件的后几行
+语法: tail -num [文件名]
+      -num 显示文件的前num行
+      -f  动态显示文件内容
+eg.  head -20 /etc/services
+
+(13)ln(原意:link)
+功能描述:产生链接文件
+语法 ln -s[源文件][目标文件]
+        -s创建软链接(不加-s表示生成硬链接)
+eg.  ln -s /etc/issue /issue.soft
+     创建文件/etc/issue的软链接/issue.soft
+     ln /etc/issue /issue.hand
+     创建文件/etc/issue的硬链接/issue.hand
+/* 软链接 相当于windows快捷方式 */
+/* 硬链接 相当于cp+同步更新*/
+/*两者的区别 当原文件被破坏时.软链接就无法打开了
+  而硬链接并不会受到影响*/
+
+4.权限管理命令
+(1)chmod(原意：change the permissions mode of a file )
+功能描述：改变文件或目录权限
+语法：  chmod [{ugo}{+-=}{rwx}][文件或目录] (ugo表示用户类型,+-=表示赋予不赋予,rwx表示权限类型)
+        chmod [mode=421][文件或目录]  (4-r,2-w,1-x)
+
+eg.     chmod g+w file
+        赋予文件file所属组写权限
+        chmod 777 dirl
+        设定目录dirl为所有用户具有全部权限
+(2)chown(原意:change file ownership)
+功能描述:改变文件或目录的所有者
+语法: chown [用户][文件或目录]
+eg.  chown nobody file
+     改变文件file的所有者为nobody
+
+(3)chgrp(原意:change file group ownership)
+功能描述:改变文件或目录的所属组
+语法: chgrp [用户组][文件或目录]
+eg. chgrp adm file
+    改变文件file的所属组为adm
+	           
+(4)umask
+功能描述:显示,设置文件的缺省权限
+语法: umask [-S]
+      -S 以rwx形式显示新建文件或目录缺省权限
+eg. umask
+    umask -S
+/*当直接用umask是 显示为 0022 0-表示特殊权限位
+                         022-表示用户权限位,但是只是一个权限掩码值
+                         必须用777-022=755 才是创建一个文件它的真正权限*/
+
+5.文件搜索命令
+(1)which或whereis(二者区别在于,后者显示的内容更多)
+功能描述:显示系统命令所在目录
+语法: which[命令名称]
+eg. which ls 
+    whereis ls
+
+(2)find
+功能描述:查找文件或目录
+语法: find[搜索路径][搜寻关键字]
+选项  <1> -name 文件名
+       * 匹配任意字符  
+       ? 匹配单个字符
+eg.   find /etc -name init 在目录/etc中查找文件init
+      find /etc -name init*
+      find /etc -name init???
+     <2> -size 文件大小 
+     block数据块 512字节 = 0.5KB   1MB=1024KB  1KB=1024bit
+     大于 用"+"
+     小于 用"-"
+     等于 用"="
+eg.   find / -size +204800 在根目录下查找大于100MB的文件
+      find / -size -204800 在根目录下查找小于100MB的文件
+      find / -size  +163800 -a -size -204800 在/etc下查找大于80MB小与100MB文件
+     <3> -user 文件所有者
+eg,   find /home -user samlee 在根目录查找所有者为samlee的文件    
+     <4> 根据时间查找分为 
+     以天为单位: ctime ,atime ,mtime
+     以分钟为单位 cmin ,amin ,mmin
+     其中 c-change改变 表示文件属性被修改过,包括所有者 所属组 权限 
+          a-access访问 表示文件被浏览过
+          m-modify修改 表示文件内容被修改过
+    "-"表示之内  "+"表示超过
+eg.  find /etc -ctime -1 表示在/etc下查找24小时内被修过属性的文件和目录
+     find /etc -cmin  +120 表示在/etc下查找超过2小时内被修过的属性文件和目录
+     <5> -type 文件类型 f 表示二进制文件 d表示目录 l软链接文件
+eg.    find /etc -name init* -a -type d 查找文件名有init的目录 
+       find -inum 657958 -exec rm {} \; （百试百灵的方法，利用i节点删除文件 657958表示i节点数 ）
+
+(3)locate()
+功能描述:寻找文件或目录
+语法: locate[搜索关键字]
+eg. locate file 列出所有跟file相关的文件
+(4)updatedb
+功能描述:建立整个系统目录文件的数据库
+语法:updatedb
+eg. #updatedb(#表示管理者身份运行)
+(5)grep
+功能描述:在文件中搜寻字串匹配的行并输出
+语法:grep[指定字串][源文件]
+eg. #grep ftp /etc/services
+
+6.帮助命令
+(1)man(原意:mannual)
+功能描述:获得帮助信息
+语法:man[任何关键字]
+eg. man ls 查看ls命令的帮助信息
+    man services 查看配置文件services的帮助信息
+/*当命令与配置文件重名是 可以使用man 5 来查看
+ 
+(2)info(原意:information)
+功能描述:获得帮助信息
+语法:info[任何关键字]
+eg. info ls 获得ls命令的帮助信息
+(3)whatis 
+功能描述:获得索引的简单说明信息
+语法:whatis [任何关键字]
+eg. whatis ls or whatis ls -help
+(4)apropos 相当于man -k
+(5)makewhatis 更新whatis和apropos的数据库(需要定期更新)
+(6)help 
+功能描述:查看shell内置命令的帮助(内置命令只能用help来查看) 
+
+7.压缩解压命令
+(1)gzip(原意:GNU zip)
+功能描述:压缩文件
+语法:gzip 选项[文件] 
+注意:1.只能压缩文件,不能压缩目录
+     2.不保留原文件
+eg. gzip file1
+(2)gunzip(原意:GNU unzip)
+功能描述:解压缩.gz的压缩文件
+语法:gunzip 选项[压缩文件]
+eg. gunzip file1.gz or gzip -d file1.gz
+(3)tar 
+功能描述:打包目录成文件
+语法: tar 选项[cvf] [目录]
+    选项: -c 产生.tar打包文件(必要选项)
+          -v 显示详细信息(不是必要选项)
+          -f 指定压缩后的文件名(必要选项)
+          -z 打包同时压缩
+eg. tar -zcvf dir1.tar.gz dir1(打包压缩后的名字先写,目标目录写后面)
+    将目录dir1压缩成一个打包并压缩的文件    
+(4)tar命令解压缩语法:
+  -x 解包.tar文件
+  -v 显示详细信息
+  -f 指定解压文件
+  -z 解压缩
+eg. tar -zxvf dirl.tar.gz
+(5)zip
+功能描述:压缩文件或目录(默认window和linux通用的格式)(会保留原文件)
+语法: zip 选项[-r] [压缩后文件名称][文件或目录]
+eg.zip services.zip /etc/services
+   压缩文件
+   zip -r test.zip /test
+  zip的解压命令
+  语法:unzip[压缩文件]
+ eg. unzip test1.zip
+(6)bzip2（非常适合压缩比较大的文件）
+功能描述:压缩文件
+语法:bzip2 选项[-k][文件名]
+     -k 产生压缩文件后保留原文件
+eg. bzip2 -k file1.bz2
+   bzip的解压命令
+语法 bunzip2 选项[-k][压缩文件]
+     -k 解压缩后保留原文件
+eg.bunzip2 -k file1.bz2
+
+8.网络通信指令
+(1)write
+功能描述:向另外一个用户发信息,以Ctrl+D作为结束
+语法: write <用户名>
+eg. write samlee
+(2)wall
+功能描述:向所有用户广播信息
+语法:wall[message][文件名]
+eg. wall Happy New Year!
+(3)ping 
+功能描述:测试网络连通性
+语法 ping 选项 IP地址
+eg. ping 192.168.1.1
+  选项: -c 可以确定ping的次数
+        -s 可以确定大小
+(3)ifconfig
+功能描述：查看网络设置信息
+语法：ifconfig 选项[-a][网卡设备标识]
+       -a 显示所有网卡信息
+eg.ifconfig -a
+
+9.系统关机命令
+(1)shutdown
+功能描述:关机
+语法:shutdown
+eg. shutdown -h now
+
+(2)reboot
+功能描述:重启系统
+语法:reboot
+eg.reboot
+
+
+
+Shell 应用技巧
+1.命令补齐 ：输入若干字母后 按<Tab>键补齐文件名
+2.命令历史 ：按方向键↑和↓可查找以前执行过的命令
+3.快捷键 ： Ctrl+l（清屏） ，Ctrl+u（把光标前的字母都清楚）
+4.命令别名定义
+eg. alias copy=cp
+    alias xrm="rm-r"
+查看别名信息:alias
+删除别名: unalias copy
+注意:如果定义的别名是命令直接打命令即可
+     如果定义的别名是命令组合则必须要用双引号括起来
+5.输入/输出重定向
+同标准I/O一样,shell对于每一个进程预先定义3个文件描述子(0,1,2).分别对应于:
+0(STDIN)标准输入
+1(STDOUT)标准输出
+2(STDERR)标准错误输出
+
+重定向符
+1、 >file  将file文件重定向为输出源 ，新建模式  
+例： ls /usr > services.txt 将/usr的执行结果，写的services.txt文件中，若有同名文件将被删除
+2、 >>file  将file文件重定向为输出源，追加模式
+例： ls /usr >>services.txt 将ls /usr的执行结果，追加到services.txt文件已有内容后
+3、 <file  将file文件重定向为输入源   
+例： wc<file1,将file1中的内容作为输入传给wc命令（也就是命令有了具体对象）
+4、 2> 或 &>  将由命令产生的错误信息输入到文件中 
+    (2> 表示只会把错误的信息输入到文件中，&>表示无论是否正确都会把信息输入到文件中)
+例： ls file1.txt 2> erro.txt 使用ls命令，查看一个不存在的文件是，将系统错误提示保存在error.txt文件中
+
+
+
+
+进程：程序的一次执行就是一个进程
+
+(1) ps(显示进程process的动态)
+ 
+   语法: ps[选项]
+   选项 1. -A 列出所有的进程
+        2. -au 显示较详细地资讯
+        3. -aux 显示所有包含其他使用者的进程 
+    进程的状态标志
+    1. R 正在执行中
+    2. S 阻塞状态
+    3. T 暂停执行
+    4. Z 不存在但暂时无法消除
+    5. D 不可中断的静止
+    6. < 高优先级的进程
+    7. N 低优先级的进程
+    8. L 有内存分页分配并锁在内存中 
+ 
+(2)top(监视进程)
+(3)pstree：将所有行程用树状图的形式展示
+(4)kill （终止进程）
+  kill [-signal] PID
+  signal是信号 PID是进程号
+  kill命令向指定的进程发出一个信号signal，在默认的情况下，kill命令向指定进程
+  发出信号15 正常情况下，将杀死那些不捕捉或不忽略这个信号的进程
+
+
+
+
+
+
+
+
+
+
+vim的一些命令
+1.插入命令
+a  在光标后附加文本
+A  在本行行末附加文本
+i  在光标前插入文本
+I  在本行开始插入文本
+o  在光标下插入文本
+O  在光标上插入文本
+
+2.定位命令
+$ 移至行尾
+0 移至行首
+H 移至屏幕上端
+M 移至屏幕中央
+L 移至屏幕下端
+gg 到第一行
+nG/:n 到第n行 
+
+3.删除命令
+x 删除光标所在处字符
+nx 删除光标所在处后n个字符
+dd 删除光标所在行,ndd删除n行
+dG 删除光标所在行到末尾的内容
+D  删除从光标所在处到行尾
+:n1,n2d 删除指定范围的行
+
+4.复制和剪切命令
+yy 复制当前行
+nyy 复制当前行以下n行
+dd 剪切当前行
+ndd 剪切当前以下n行
+p   粘贴当前光标所在hh下或行上
+
+替换和取消命令
+r 取代光标所在处字符
+R 从光标所在处开始替换字符,按Esc结束
+u 取消上一步操作
+
+搜索和替换命令
+/字符  向前搜索指定字符串  set ic 搜索时忽略大小写  按n 搜索指定字符串的下一个出现位置
+:%s/old/new/g    全文替换指定字符串 old是想要替换的对象,new是替换成什么  格式 :/old/new/g %s表示全文替换
+:n1,n2s/old/new/g 在一定范围内替换指定字符串
+
+导入文件:r 文件名
+在vim中执行命令:!命令
+
+
+新增命令：
+
+passwd 
+
+格式： 1.passwd 改当前用户的密码
+       2.sudo passwd 改管理员用户的密码
+       3.sudo u1 passwd 改其他用户的密码
+
+df
+用于查看磁盘空间的使用情况
+格式 df [选项] file 
+选项 1、 -T 显示物理文件系统的文件格式类型
+     2、 -h 物理文件系统大小按兆字节为单位显示
+
+du
+列出目录和文件所使用的磁盘块数，每块占512个字节
+格式 du [选项] file
+选项 1、 -a仅列出空闲的文件数
+     2、 -h列出磁盘的使用情况（KB）
+     3、 -s列出总的空闲空间（KB）
+
+通配符：
+       在linux中通配符是用来匹配符合条件的文件名，通配符是完全匹配的 
+		1. *
+		2. ?
+		3. []
+正则表达式：
+	  在Linux中用来在文件中匹配符合条件的字符串，正则是包含匹配
+	    基础正则表达式：  元字符    				作用
+						1.  *   		 前一个字符匹配0次或任意多次
+											例子：
+									 			grep "a*" txt  :表示匹配所有内容，包括空白行
+									 			grep "aa*" txt :表示匹配至少包含有一个a的行
+						2.  .    		 匹配除了换行符外任意一个字符
+											例子：
+												grep "d..e" :表示会匹配d和t之间两个字母的字符串如date
+												grep "s.*d" :表示会在s和d之间有任意字符
+						3.  ^    		 匹配行首
+											例子：
+								    			grep "^N"   :表示匹配以大写字母开头的行
+						4.  $    		 匹配行尾
+						       			 	例子：
+								   				grep  "N$"   :表示匹配以大写字母N结尾的行
+								   				grep  "^$"   :表示会匹配空白行
+						5. []   		 匹配中括号中指定的任意一个字符，只匹配一个字符
+						        			例子：
+								  				grep "[0~9]"  :表示匹配一个任意的数字
+								  				[a-z]: 表示匹配a-z的字符
+								  				grep "s[ao]d" :表示匹配s和d字母中，要不是a，要不是o
+						6. [^]    		 匹配除中括号的字符以外的任意一个字符代表取反 例子：[^0~9]表示匹配任意一个非数字的字符
+						7.  \    		 转义字符，用于取消特殊字符的含义
+						8. \{n\} 		 表示其前面的字符恰好出现n次  例子：[0~9]\{4\} 表示匹配4位数字
+						9. \{n,\} 		 表示其前面的字符不小于出现n次 例子：[0~9]\{2,\} 表示两位及以上的数字
+						10. \{n,m\}      表示其前面的字符至少出现n次，最多出现m次
+						11. \w           表示匹配阿拉伯数字，英文大小写字母和下划线（\W的作用和\w相反也就是互补）
+						12. \d           表示匹配数字
+						13. \s           表示匹配空格，制表符，断行等
+						14. [范围] +     表示重复一次或多次
+						15. ?            表示重复零次或一次
+						16. {}           表示指定重复的范围（{a，b}重复a到b次）
+						17. ()           表示分组匹配
+
+
+
+shell编程的基本过程
+
+step1 建立shell文件
+step2 赋予shell文件执行权限
+step3 执行shell文件
+
+shell允许用户建立变量存储数据，但不支持数据类型将任何赋给变量的值都解释为一串字符
+格式： variable = value （变量名 = 数据）变量的赋值不要加空格
+例 : count=1(不要加空格！！！！)
+     echo $count 
+
+bash 有如下变量
+1、用户自定义变量
+   （1）在shell编程中通常使用全大写变量，方便识别
+   （2）变量的调用 在变量前加$ 
+        echo $count
+   （3）赋值跟C语言一样 右赋给左
+   （4）使用unset命令删除变量的赋值   
+
+2、位置变量即命令行参数
+   （1）$0  包含脚本文件名
+   （2）$1，$2...$9 分别包含第一个到第九个命令行参数
+   （3）$#  包含命令行参数的个数
+   （4）$@  包含所有命令行参数
+   （5）$？ 包含前一个命令的退出状态
+   （6）$*  包含所有命令行参数
+   （7）$$  包含正在执行进程的ID号  
+3、预定义变量
+4、环境变量
+export 可以显示环境变量
+
+shell程序和语句
+分为三类
+1.说明性语句： 以#号开始到该行结束，不被解释执行就是C语言的注释
+2.功能性语句： 任意的shell命令、用户程序或其他shell程序
+3.结构性语句： 条件，循环等
+
+常用功能性语句（命令）
+1.read
+read var
+把读入的数据全部赋给var（类似scanf）
+read var1 var2....
+读入用空格隔开 将赋给下一个值 用echo时跟printf差不多有多少个变量就有多少个$
+如果内容超出变量的个数，则多出的将默认给最后一个
+若是使用/bin/bash下的sh -n 表示不换行
+2.expr（算术运算命令）
+eg. expr 27 + 3 \* 4 
+eg1.A=`expr 27 + 3 \* 4` 若这样写则``里的内容都要加空格 跟打命令差不多
+  所以两种写法都打空格保险
+3.test语句(0为真 1为假)
+对象有：字符串 整数 文件属性
+关于字符串测试
+s1 = s2 测试两个字符串的内容是否完全一样
+s1 != s2 测试两个字符串的内容是否有差异
+-z s1 测试s1字符串的长度是否为0
+-n s1 测试s1字符串的长度是否不为0
+
+eg.test "$answer" = "yes" 测试变量answer的值是否为字符串yes
+
+关于整数的测试
+a -eq b 测试a与b是否相等
+a -ne b 测试a与b是否不相等
+a -gt b 测试a与b是否大于b
+a -ge b 测试a与b是否大于等于b
+a -lt b 测试a与b是否小于b
+a -le b 测试a与b是否小于等于b
+
+eg. test $num -ep 18 测试变量num的值是否为整数18
+
+
+关于文件的测试
+-d name 测试name 是否为一个目录
+-e name 测试一个文件是否存在
+-f name 测试name 是否为普通文件
+-L name 测试name 文件是否为符号链接
+-r name 测试name 文件是否存在且为可读
+-w name 测试name 文件是否存在且为可写
+-x name 测试name 文件是否存在且为可执行
+-s name 测试name 文件是否存在且长度不可为0
+f1 -nt f2 测试文件f1 是否比文件f2 更新
+f1 -ot f2 测试文件f1 是否比文件f2 更旧
+
+下列两种写法等同
+if test -f $filename 
+if [()-f $filename()] (打（）位置表示空格，其空格是不能省)
+
+
+4.条件语句
+
+语法:
+1.
+if 表达式
+	then 命令表
+fi
+
+注意：
+if和fi是条件语句的语句括号,必须成对使用 (相当于{})
+命令表中的命令可以是一条，也可以是若干条
+2.
+if 表达式
+then 命令表1
+elif 
+then 命令表2
+else 命令表3
+fi
+
+
+2.
+case...esac
+
+case 字符串变量 in  （case语句只能检测字符串变量）
+      模式1）
+            命令表1 （各模式中可用文件名字符，以右括号结束）
+            ；；
+      模式2|模式3）
+            命令表2
+            ；；   （命令表以单独的双分号行结束，退出case语句）
+
+      模式n）
+            命令表n   （模式n常写为字符* 表示所有其他模式）
+            ；；       （最后一行的双分号可以省略）
+
+
+
+5.循环语句
+for 变量名 in 单词表
+       do 
+           命令表
+        done
+
+或 for（（i=1；i<10 ；++i））
+do
+   命令表
+done
+
+当循环次数一直或确定时，使用for循环语句来多次执行一条或一组命令
+循环体由语句括号do和done来限定 
+变量依次去单词表中的各个单词，每取一次单词，就执行循环，次数由单词表中的单词确定
+命令表中的命令可以是一条，也可以是有分号或换行符分开的多条
+
+2.
+while 
+
+while 命令或表达式
+   do 
+     命令表
+   done
+while语句首先测试其后的命令或表达式的值，如果为真，就执行一次循环体中的命令，如此循环直到命令或表达式为假
+
+3.break与continue
+和 C语言差不多
+
+
+shell函数调用（跟C语言差不多）
+
+方式1
+变量名=`名称[arg1 arg2 ...]`
+方式2
+名称[arg1 arg2 ...]
+echo $?
+
+
+shell里变量默认为全局变量
+若要改成局部变量 格式：local 变量名=value
+
+
+Git的常用命令
+1.	git init：创建一个空的仓库repository.
+2.	git status：查看文件的状态
+3.	git log：查看历史
+4.	git config  — —global user.name ：设置提交代码时的用户信息
+5.	git config  — —global user.email ： 设置提交代码时的用户信息
+6.	git add [file]/[dir].. ：添加指定文件/目录到暂存区
+7.	git add ：添加当前目录下的文件到指定暂存
+8.	git commit -m “修改的信息” ：将暂存区的文件提交到仓库
+9.	git rm ：用于删除文件(暂存区里的,最后还需要上传结果)
+10.	git remote add [新的名字] [远程仓库的地址（github）]：新建一个远程仓库
+11.	git pull [新的名字] [分支] :这一步在push前一定需要做 
+12.	git push [新的名字] [你需要的branch] ：上传指定分支给远程仓库
+剩下的一些命令可以通过 git — —help 来查询
+
+一些软件：
+Dwm：c写的一个窗口管理器 官网是http://suckless.org/
+St   ：c写的一个终端  官网是http://suckless.org/、
+（以上两个软件都可以用修改，官网里有他们的补丁，自己也可修改源码达成你要的
+打补丁：用patch < 补丁名称， 随后用sudo make clean install 来编译c 因为以上都是用git来管理的所以打完一个补丁可以上传git以后可以修改）
+Lazygit：用于管理git的一个软件
+另外有个好用的方式用来寻找安装依赖包                                                                                                                                                     
+  1 首先下载:sudo apt-get install apt-file(当然下载过的就可以省略)
+  2 然后执行:Sudo apt-file update
+  3 接着执行:apt-file search "你需要的依赖包"
+  4 程序会给你一个信息如:"libxtst-dev: /usr/include/X11/extensions/XTest.h"
+  5 libxtst-dev就是你需要下载的包名所以紧接着执行:sudo apt-get install libxtst-dev 即可
+
+
+
+
+
+
+
+Arch 的安装
+0.	开启ntp 同步时间 ： timedatectl set-ntp true
+1.	进行分区
+I）fdisk -l 查看当前的分区情况
+fdisk  /dev/sda : 对这个区域进行分区
+步骤依次是: 1.n 2.p 3.1 第一分区: +200M  分给boot
+           1.n 2.p 3.2 第二分区: +2G     分给home
+           1.n 2.p 3.3 第三分区：+1G  分给swap交换分区
+           1.n 2.p 3.4 第四分区：回车过 分给剩下的所有
+           最后 w 确认写入
+ii) 进行格式化
+ 步骤： mkfs.fat -F32 /dev/sda1
+      mkfs.ext4 /dev/sda2
+      mkfs.ext4 /dev/sda4
+   mkswap /dev/sda3
+   swapon /dev/sda3
+iii) 修改源
+步骤: awk “/China/,/Server/” /etc/pacman.d/mirroirlist > m.txt
+     mv m.txt /etc/pacman.d/mirrorilist 
+     pacman -Sy
+iiii)进行挂载
+步骤：先将最大的区域挂载上去
+      mount /dev/sda4  /mnt
+      创建boot 和 home目录
+      mkdir /mnt/boot
+      mkdir /mnt/home
+      继续挂载
+      mount /dev/sda2  /mnt/home
+      mount /dev/sda1  /mnt/boot
+iiiii)利用脚本pacstrp安装
+   pacstrap /mnt base linux linux-firmware
+   生成fstab文件
+   genfstab -U /mnt >> /mnt/etc/fstab
+iv) 编辑一下 /mnt/etc/locale.gen
+
+去掉en_US.UTF-8 UTF-8  ，zh_CN.UTF-8 ,zh_TW.UTF-8前面的#
+进入arch-chroot  /mnt 执行locale-gen
+然后exit
+编辑一下  /mnt/etc/locale.conf  写上LANG=en_US.UTF-8
+编辑一下 /mnt/etc/hostname  写上你要的用户名;比如yu
+编辑一下 /mnt/etc/hosts 
+写上 ： 127.0.0.1  localhost
+        ：：1      localhost
+        127.0.1.1  yu.localdomain yu
+然后 arch-chroot /mnt
+1.	改时间： ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+2.	同步系统时间 ： hwclock –-systohc
+3.	改密码 ： passwd 
+4.	pacman -S  grub efibootmgr intel-ucode os-prober
+5.	mkdir  /boot/grub
+6.	grub-mkconfig > /boot/grub/grub.cfg
+7.	grub-install – -recheck /dev/sda – -efi-directory=/boot
+8.	pacman -S zsh vi dhcpcd 
+9,  systemctl enable dhcpcd
+最后exit 
+umount -R /mnt
+reboot
+ 
+
