@@ -657,6 +657,8 @@ Git的常用命令
 11.	git pull [新的名字] [分支] :这一步在push前一定需要做 
 12.	git push [新的名字] [你需要的branch] ：上传指定分支给远程仓库
 剩下的一些命令可以通过 git — —help 来查询
+如果你在github上进行了修改,如增删一些内容那你重新在终端下操作时一定需要进行git pull 
+否则将不能正常的git push 因为不能统一
 
 一些软件：
 Dwm：c写的一个窗口管理器 官网是http://suckless.org/
