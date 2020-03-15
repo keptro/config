@@ -1,0 +1,9 @@
+search backgrounds
+open_with h
+fzf
+
+open_with 
+open_with vim
+search net
+search sock
+open_with0
