@@ -10,7 +10,7 @@ set ignorecase
 set number
 set wildmenu
 set wildmode=longest:list,full
-syntax on
+#syntax
 set nocompatible
 set tabstop=4
 set autoindent
