@@ -1,14 +1,12 @@
                                                          python
-1.定义变量的方式格式： 变量名 = 值 即可
+1.定义变量的方式格式： 变量名 = 值 即可 (variable = value)
                与C语言的不同是 不用定义数据类型 直接变量名 = 值即可 且也不需要加分号
 2.python输出与C语言的不同 1.不需要分号，输入的格式也有所不同
-		格式： 1.print（变量名） 
-			   2.print（"你想填写的信息%d、%c...." %变量名）or print（"你想填写的信息%d、%c...." %(变量名,变量名)）
-     		   3.print（"各种信息%s" %（变量名，变量名.....）） %s可以代替%d %c %f......
-       		   4.语法 f'{表达式}'  print（f’我的名字{my_name},年龄{age}’） 比较常用建议使用 但是只在python3.6以上的版本有效
-					  print(f '我的名字是{my_name},今年{age}岁')
-			    还有另外一种
-				print（“变量名or其他方式”，end"各类信息"） python的print（“.....”）默认有end"\n" 也就是换行，但是我们可以改变这一规则
+		用法:
+			 1) print("content") or print('content')
+			 2) print(variable)  [多个变量时可以用逗号隔开',']
+			 3) print("",sep=' ',end='\n') [sep默认的分割是空格,end默认是换行]
+			 4) print(r"content") [前面加上r表示原样输出引号里的内容]
 3.关于python的输入 与C语言的不同,python使用的是input()函数
 		格式 1).input("......")
     		 2).若想输出需要这么做  变量名1=input(".....")  print(变量名1)即可
@@ -78,9 +76,12 @@
     		 执行语句2
  			#和if的用法差不多
 2) for语法
- 		for临时变量 in 序列：
+ 		for 临时变量 in 序列：
    			 重复执行的代码
    			 重复执行的代码
+	   range(start,end,step)
+		只有一个时默认是end
+		有两个时表示start和end
    		例子：
 			1.for i in range(100):
 					print(i)
