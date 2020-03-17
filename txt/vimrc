@@ -70,7 +70,6 @@ Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
 Plug 'sheerun/vim-polyglot'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'Valloric/YouCompleteMe'
 call plug#end()
 
 "color snazzy
@@ -220,4 +219,28 @@ let g:rainbow_conf = {
 \}
 
 "This is the rainbow
+
+"this is the ale
+let g:ale_lint_on_text_changed   = 'normal' " 代码更改后启动检查
+let g:ale_lint_on_insert_leave = 1 " 退出插入模式即检查、
+let g:ale_sign_column_always = 1 " 总是显示动态检查结果
+let g:ale_sign_error  = '>>' " error 告警符号
+let g:ale_sign_warning = '--' " warning 告警符号
+let g:ale_echo_msg_error_str = 'E' " 错误显示字符
+let g:ale_echo_msg_warning_str = 'W' " 警告显示字符
+let g:ale_echo_msg_format  = '[%linter%] %s [%severity%]' " 告警显示格式
+" C 语言配置检查参数
+let g:ale_c_gcc_options = '-Wall -Werror -O2 -std=c11'
+let g:ale_c_clang_options = '-Wall -Werror -O2 -std=c11'
+let g:ale_c_cppcheck_options = ''
+"this is the ale
+
+"this is the nerdcommenter
+let g:NERDSpaceDelims         = 1" 在注释符号后加一个空格
+let g:NERDCompactSexyComs   = 1  " 紧凑排布多行注释
+let g:NERDDefaultAlign         = 'left'  " 逐行注释左对齐
+let g:NERDCustomDelimiters     = {'c': {'left': '/*', 'right': '*/'}} " C 语言注释符号
+let g:NERDCommentEmptyLines  = 1" 允许空行注释
+let g:NERDTrimTrailingWhitespace = 1" 取消注释时删除行尾空格
+let g:NERDToggleCheckAllLines   = 1" 检查选中的行操作是否成功
 
