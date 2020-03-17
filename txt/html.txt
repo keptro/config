@@ -237,4 +237,12 @@
 			-颜色浓度通过 00-ff表示
 			-如果颜色两位两位重复可以进行简写
 			 如:#aabbcc ->  #abc
+   		  19)盒子模型
+		  	内容区:存储元素的内容的区域
+			   == 内容区的大小由width 和 height 两个属性设置
+			边框:
+			   == 需要3个样式
+			   1.border-width
+			   2.border-color
+			   3.border-style
 
