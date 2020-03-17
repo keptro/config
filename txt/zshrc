@@ -106,6 +106,7 @@ alias rmdir='rm -r'
 alias s=neofetch 
 alias ra=ranger
 alias f=fzf
+alias gg=lazygit
 alias github='firefox www.github.com'
 alias baidu='firefox www.baidu.com'
 alias fjyi='firefox https://fanyi.baidu.com'
