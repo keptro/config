@@ -73,6 +73,7 @@ plugins=(git
 	    zsh-autosuggestions
 		rand-quote
 		colored-man-pages
+		vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
