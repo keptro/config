@@ -245,4 +245,14 @@
 			   1.border-width
 			   2.border-color
 			   3.border-style
-
+			内边距:
+			  padding-上,下,左,右 单位:px
+			外边距:
+			  margin-上,下,左,右  单位:px
+			  正值往上移动,负值往下移动
+			例子:
+				水平布局
+				让子元素在父元素中居中
+				width=xxx px;
+				margin= 0 auto;
+				
