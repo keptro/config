@@ -21,6 +21,8 @@ set novisualbell
 set encoding=utf-8
 set scrolloff=5
 let mapleader=" "
+
+"----vim的基本键位配置----"
 map Q :q<CR>
 map S :w<CR>
 map s <nop>
@@ -28,29 +30,40 @@ map K 5k
 map J 5j
 imap kj <Esc>
 map <LEADER><CR> :nohlsearch<CR>
+"----vim的基本键位配置----"
 
+"----分屏的操作----"
 map sl :set splitright<CR>:vsplit<CR>
 map sh :set nosplitright<CR>:vsplit<CR>
 map sk :set nosplitbelow<CR>:split<CR>
 map sj :set splitbelow<CR>:split<CR>
+map sv <C-w>t<C-w>H
+map sh <C-w>t<C-w>K
+"----分屏的操作----"
+
+"----分屏后移动光标的操作----"
 map<LEADER>l <C-w>l
-map<LEADER>k <C-w>k                                                                                                                            
 map<LEADER>h <C-w>h
 map<LEADER>j <C-w>j
+map<LEADER>k <C-w>k
+"----分屏光标移动的操作----"
 
+"----调整屏幕的距离大小----"
 map <up> :res -5<CR>
 map <down> :res +5<CR>
 map <left> :vertical resize-5<CR>
 map <right> :vertical resize+5<CR>
+"----调整屏幕的距离大小----"
 
+"----分页的操作----"
 map tk :tabe<CR>
 map th :-tabnext<CR>
 map tl :tabnext<CR>
+"----分页的操作----"
 
-map sv <C-w>t<C-w>H
-map sh <C-w>t<C-w>K
+"----FZF模糊文件查找器----"
 noremap <C-f> :FZF<CR>
-
+"----FZF模糊文件查找器----"
 
 
 call plug#begin('~/.vim/plugged')
@@ -60,6 +73,7 @@ Plug 'w0rp/ale'
 Plug 'connorholyday/vim-snazzy'
 Plug 'preservim/nerdtree'
 Plug 'mhinz/vim-startify'
+Plug 'mbbill/undotree/'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf.vim'
@@ -71,8 +85,13 @@ Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
 Plug 'sheerun/vim-polyglot'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'iamcco/markdown-preview.nvim'
+Plug 'vimwiki/vimwiki'
+Plug 'dhruvasagar/vim-table-mode'
 call plug#end()
 
+
+"----vim的配色方案----"
 "color snazzy
 "let g:SnazzyTransparent = 1
 set termguicolors
@@ -80,17 +99,23 @@ set background=dark
 let g:gruvbox_material_background = 'soft'
 colorscheme gruvbox-material
 let g:airline_theme = 'gruvbox_material'
+"----vim的配色方案----"
 
 
+"----Ultinsnips代码片段----"
 let g:UltiSnipsExpandTrigger="<tab>"
 " 使用 tab 切换下一个触发点，shit+tab 上一个触发点
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 " 使用 UltiSnipsEdit 命令时垂直分割屏幕
 let g:UltiSnipsEditSplit="vertical"
+"----Ultinsnips代码片段----"
 
+"----Undotree----"
+let g:undotree_DiffAutoOpen = 0
+map L :UndotreeToggle<CR>
 
-"This is the neocomplete
+"----neocomplete-----"
 "Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
@@ -142,7 +167,6 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 "let g:neocomplete#enable_auto_select = 1   
 "let g:neocomplete#disable_auto_complete = 1
 "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"    
-   161                                                                                                                                                 
 " Enable omni completion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
@@ -161,14 +185,14 @@ endif
 " For perlomni.vim setting.
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-"This is the neocomplete
+"----neocomplete-----"
 
 
 
 
-"This is the NERDTree
+"----NERDTree文件目录----"
 map tt :NERDTreeToggle<CR>
-autocmd vimenter * NERDTree
+"autocmd vimenter * NERDTree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd StdinReadPre * let s:std_in=1
@@ -196,13 +220,10 @@ call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
 call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
-  "This is the NERDTree
+"----NERDTree文件目录----"
   
   
-  
-  "This is the rainbow
-  "rainbow
-  "rainbow
+"----rainbow括号的高亮----"  
 let g:rainbow_active = 1
 let g:rainbow_conf = {
 \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
@@ -226,10 +247,9 @@ let g:rainbow_conf = {
 \       'css': 0,
 \   }
 \}
+"----rainbow括号的高亮----"  
 
-"This is the rainbow
-
-"this is the ale
+"----ale语言纠错----"
 let g:ale_lint_on_text_changed   = 'normal' " 代码更改后启动检查
 let g:ale_lint_on_insert_leave = 1 " 退出插入模式即检查、
 let g:ale_sign_column_always = 1 " 总是显示动态检查结果
@@ -242,11 +262,7 @@ let g:ale_echo_msg_format  = '[%linter%] %s [%severity%]' " 告警显示格式
 let g:ale_c_gcc_options = '-Wall -Werror -O2 -std=c11'
 let g:ale_c_clang_options = '-Wall -Werror -O2 -std=c11'
 let g:ale_c_cppcheck_options = ''
-"this is the ale
 
-"-----------------------------------------------------------------------------
-" plugin - ale.vim
-"-----------------------------------------------------------------------------
 "keep the sign gutter open
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
@@ -295,9 +311,12 @@ nmap <silent> <C-J> <Plug>(ale_next_wrap)
 " dont run lint on opening a file
 " let g:ale_lint_on_enter = 0
 
-"this is the ale
+"----ale语言纠错----"
 
-"this is the nerdcommenter
+
+
+
+"----nerdcommenter----"
 let g:NERDSpaceDelims         = 1" 在注释符号后加一个空格
 let g:NERDCompactSexyComs   = 1  " 紧凑排布多行注释
 let g:NERDDefaultAlign         = 'left'  " 逐行注释左对齐
@@ -305,4 +324,10 @@ let g:NERDCustomDelimiters     = {'c': {'left': '/*', 'right': '*/'}} " C 语言
 let g:NERDCommentEmptyLines  = 1" 允许空行注释
 let g:NERDTrimTrailingWhitespace = 1" 取消注释时删除行尾空格
 let g:NERDToggleCheckAllLines   = 1" 检查选中的行操作是否成功
+"----nerdcommenter----"
+
+
+
+
+
 
