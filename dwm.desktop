@@ -1,0 +1,12 @@
+[Desktop Entry]
+#xsession file
+Encoding=UTF-8
+Name=dwm
+Comment=Dynamic window manager
+Exec=dwm
+Icon=dwm
+Type=XSession
+
+
+#the path : /usr/share/xsession
+
