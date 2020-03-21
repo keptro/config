@@ -122,10 +122,18 @@ eg.  ln -s /etc/issue /issue.soft
 语法：  chmod [{ugo}{+-=}{rwx}][文件或目录] (ugo表示用户类型,+-=表示赋予不赋予,rwx表示权限类型)
         chmod [mode=421][文件或目录]  (4-r,2-w,1-x)
 
-eg.     chmod g+w file
-        赋予文件file所属组写权限
-        chmod 777 dirl
-        设定目录dirl为所有用户具有全部权限
+		eg.     chmod g+w file
+				赋予文件file所属组写权限
+				chmod 777 dirl
+				设定目录dirl为所有用户具有全部权限
+		chmod对文件和目录的含义不同
+|权限|   对文件        |            对目录        |
+| r  |可以查看文件内容 |可以列出目录中的内容      |
+| w  |可以修改文件内容 |可以在目录中创建、删除文件|
+| x  |可以执行文件     |      可以进入目录        |
+
+
+
 (2)chown(原意:change file ownership)
 功能描述:改变文件或目录的所有者
 语法: chown [用户][文件或目录]
