@@ -34,6 +34,8 @@ map K 5k
 map J 5j
 imap kj <Esc>
 map <LEADER><CR> :nohlsearch<CR>
+"----search <--> and change the content in <-->
+map <LEADER><LEADER> <Esc>/<--><CR>:nohlsearch<CR>c4l
 
 "----分屏的操作----"
 map sl :set splitright<CR>:vsplit<CR>
@@ -71,24 +73,33 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'vim-airline/vim-airline'
 Plug 'w0rp/ale'
-Plug 'connorholyday/vim-snazzy'
-Plug 'preservim/nerdtree'
 Plug 'mhinz/vim-startify'
+
 Plug 'mbbill/undotree/'
+Plug 'preservim/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'
+"----fzf----"
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': './install --bin' }
 Plug 'shougo/neocomplete.vim'     
 Plug 'luochen1990/rainbow'
 Plug 'godlygeek/tabular'
+
+"----vim colorscheme----"
+Plug 'connorholyday/vim-snazzy'
 Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
 Plug 'sheerun/vim-polyglot'
+
+"----代码片段----"
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'iamcco/markdown-preview.nvim'
+
+"----markdown----"
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'vimwiki/vimwiki'
 Plug 'dhruvasagar/vim-table-mode'
+
 call plug#end()
 
 
@@ -125,12 +136,6 @@ let g:neocomplete#enable_smart_case = 1
 "Set minimum syntax keyword length.
 let g:neocomplete#sources#syntax#min_keyword_length = 3
 
-" Define dictionary.
-let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scheme' : $HOME.'/.gosh_completions'
-        \ }
 
 " Define keyword.        
   if !exists('g:neocomplete#keyword_patterns')
@@ -189,13 +194,7 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 "----NERDTree文件目录----"
 map tt :NERDTreeToggle<CR>
 "----autocmd vimenter * NERDTree----"
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv    ()[0] | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
@@ -218,7 +217,6 @@ call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 
-"----NERDTree文件目录----"
   
   
 "----rainbow括号的高亮----"  
@@ -321,8 +319,38 @@ let g:NERDCommentEmptyLines  = 1" 允许空行注释
 let g:NERDTrimTrailingWhitespace = 1" 取消注释时删除行尾空格
 let g:NERDToggleCheckAllLines   = 1" 检查选中的行操作是否成功
 
+"----Markdown----"
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip = ''
+let g:mkdp_browser = 'firefox'
+let g:mkdp_echo_preview_url = 0
+let g:mkdp_browserfunc = ''
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1
+    \ }
+let g:mkdp_markdown_css = ''
+let g:mkdp_highlight_css = ''
+let g:mkdp_port = ''
+let g:mkdp_page_title = '「${name}」'
+source ~/.vim/Markdown.vim
 
 
-
-
+"----startify----"
+let g:startify_lists = [
+\ { 'type': 'files',     'header': ['   MRU']            },
+\ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+\ { 'type': 'sessions',  'header': ['   Sessions']       },
+\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+\ { 'type': 'commands',  'header': ['   Commands']       },
+\ ]
 
