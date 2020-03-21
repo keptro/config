@@ -1,28 +1,32 @@
+"----打开plug----"
 filetype on
 filetype indent on
 filetype plugin on
 filetype plugin indent on
-set wrap
-set cursorline
-set hlsearch
-set incsearch
-set ignorecase 
+
+"----设置行号----"
 set number
-set wildmenu
-set wildmode=longest:list,full
+set relativenumber
+
+"----打开语法高亮----"
 syntax on
+syntax enable
+
+"----vim的基本键位配置----"
 set nocompatible
 set tabstop=4
 set autoindent
-set relativenumber
 set smartindent
 set cindent
 set novisualbell
 set encoding=utf-8
 set scrolloff=5
 let mapleader=" "
+set wildmenu
+set wildmode=longest:list,full
+set wrap
+set cursorline
 
-"----vim的基本键位配置----"
 map Q :q<CR>
 map S :w<CR>
 map s <nop>
@@ -30,7 +34,6 @@ map K 5k
 map J 5j
 imap kj <Esc>
 map <LEADER><CR> :nohlsearch<CR>
-"----vim的基本键位配置----"
 
 "----分屏的操作----"
 map sl :set splitright<CR>:vsplit<CR>
@@ -39,31 +42,29 @@ map sk :set nosplitbelow<CR>:split<CR>
 map sj :set splitbelow<CR>:split<CR>
 map sv <C-w>t<C-w>H
 map sh <C-w>t<C-w>K
-"----分屏的操作----"
 
 "----分屏后移动光标的操作----"
 map<LEADER>l <C-w>l
 map<LEADER>h <C-w>h
 map<LEADER>j <C-w>j
 map<LEADER>k <C-w>k
-"----分屏光标移动的操作----"
 
 "----调整屏幕的距离大小----"
 map <up> :res -5<CR>
 map <down> :res +5<CR>
 map <left> :vertical resize-5<CR>
 map <right> :vertical resize+5<CR>
-"----调整屏幕的距离大小----"
 
 "----分页的操作----"
 map tk :tabe<CR>
 map th :-tabnext<CR>
 map tl :tabnext<CR>
-"----分页的操作----"
 
-"----FZF模糊文件查找器----"
+"----FZF and search command----"
 noremap <C-f> :FZF<CR>
-"----FZF模糊文件查找器----"
+set hlsearch
+set incsearch
+set ignorecase 
 
 
 call plug#begin('~/.vim/plugged')
@@ -99,7 +100,6 @@ set background=dark
 let g:gruvbox_material_background = 'soft'
 colorscheme gruvbox-material
 let g:airline_theme = 'gruvbox_material'
-"----vim的配色方案----"
 
 
 "----Ultinsnips代码片段----"
@@ -109,7 +109,6 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 " 使用 UltiSnipsEdit 命令时垂直分割屏幕
 let g:UltiSnipsEditSplit="vertical"
-"----Ultinsnips代码片段----"
 
 "----Undotree----"
 let g:undotree_DiffAutoOpen = 0
@@ -182,17 +181,14 @@ endif
 "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
 "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-" For perlomni.vim setting.
-" https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-"----neocomplete-----"
 
 
 
 
 "----NERDTree文件目录----"
 map tt :NERDTreeToggle<CR>
-"autocmd vimenter * NERDTree
+"----autocmd vimenter * NERDTree----"
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd StdinReadPre * let s:std_in=1
@@ -202,7 +198,8 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
-" NERDTress File highlighting
+
+"---- NERDTress File highlighting高亮文件----"
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
  exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
  exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
@@ -220,6 +217,7 @@ call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
 call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
+
 "----NERDTree文件目录----"
   
   
@@ -247,7 +245,6 @@ let g:rainbow_conf = {
 \       'css': 0,
 \   }
 \}
-"----rainbow括号的高亮----"  
 
 "----ale语言纠错----"
 let g:ale_lint_on_text_changed   = 'normal' " 代码更改后启动检查
@@ -311,7 +308,6 @@ nmap <silent> <C-J> <Plug>(ale_next_wrap)
 " dont run lint on opening a file
 " let g:ale_lint_on_enter = 0
 
-"----ale语言纠错----"
 
 
 
@@ -324,7 +320,6 @@ let g:NERDCustomDelimiters     = {'c': {'left': '/*', 'right': '*/'}} " C 语言
 let g:NERDCommentEmptyLines  = 1" 允许空行注释
 let g:NERDTrimTrailingWhitespace = 1" 取消注释时删除行尾空格
 let g:NERDToggleCheckAllLines   = 1" 检查选中的行操作是否成功
-"----nerdcommenter----"
 
 
 
