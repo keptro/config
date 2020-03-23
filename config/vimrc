@@ -32,7 +32,6 @@ map S :w<CR>
 map s <nop>
 map K 5k
 map J 5j
-imap kj <Esc>
 map <LEADER><CR> :nohlsearch<CR>
 "----search <--> and change the content in <-->
 map <LEADER><LEADER> <Esc>/<--><CR>:nohlsearch<CR>c4l
