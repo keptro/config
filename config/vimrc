@@ -11,10 +11,11 @@ set relativenumber
 "----打开语法高亮----"
 syntax on
 syntax enable
-
 "----vim的基本键位配置----"
 set nocompatible
-set tabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set autoindent
 set smartindent
 set cindent
@@ -26,16 +27,29 @@ set wildmenu
 set wildmode=longest:list,full
 set wrap
 set cursorline
-
+"----显示结束符，tab和trail
+set list
+set listchars=tab:\ \ ,trail:▫
+map <LEADER>sr :%s/
+vnoremap <LEADER>sr :s/
+"----改变光标样式----"
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+"----敲击%%会显示你的当前的路径----"
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' :'%%'
+"----重新进入时直接到上次编辑的地方----"
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 map Q :q<CR>
 map S :w<CR>
 map s <nop>
 map K 5k
 map J 5j
 map <LEADER><CR> :nohlsearch<CR>
+noremap = nzz
+noremap - Nzz
 "----search <--> and change the content in <-->
 map <LEADER><LEADER> <Esc>/<--><CR>:nohlsearch<CR>c4l
-
 "----分屏的操作----"
 map sl :set splitright<CR>:vsplit<CR>
 map sh :set nosplitright<CR>:vsplit<CR>
@@ -66,6 +80,7 @@ noremap <C-f> :FZF<CR>
 set hlsearch
 set incsearch
 set ignorecase 
+set smartcase
 
 
 call plug#begin('~/.vim/plugged')
@@ -98,7 +113,7 @@ Plug 'honza/vim-snippets'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'vimwiki/vimwiki'
 Plug 'dhruvasagar/vim-table-mode'
-
+"Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 call plug#end()
 
 
@@ -136,7 +151,7 @@ let g:neocomplete#enable_smart_case = 1
 let g:neocomplete#sources#syntax#min_keyword_length = 3
 
 
-" Define keyword.        
+" Define keyword.
   if !exists('g:neocomplete#keyword_patterns')
     let g:neocomplete#keyword_patterns = {}
 endif
@@ -167,9 +182,9 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 
 " Shell like behavior(not recommended).
 "set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1   
+"let g:neocomplete#enable_auto_select = 1
 "let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"    
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 " Enable omni completion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
@@ -216,9 +231,9 @@ call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 
-  
-  
-"----rainbow括号的高亮----"  
+
+
+"----rainbow括号的高亮----"
 let g:rainbow_active = 1
 let g:rainbow_conf = {
 \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
@@ -325,7 +340,7 @@ let g:mkdp_refresh_slow = 0
 let g:mkdp_command_for_global = 0
 let g:mkdp_open_to_the_world = 0
 let g:mkdp_open_ip = ''
-let g:mkdp_browser = 'firefox'
+let g:mkdp_browser = 'google-chrome-stable'
 let g:mkdp_echo_preview_url = 0
 let g:mkdp_browserfunc = ''
 let g:mkdp_preview_options = {
@@ -341,7 +356,15 @@ let g:mkdp_markdown_css = ''
 let g:mkdp_highlight_css = ''
 let g:mkdp_port = ''
 let g:mkdp_page_title = '「${name}」'
+map <LEADER>p :MarkdownPreviewStop<CR>
+map <LEADER>m :MarkdownPreview<CR>
 source ~/.vim/Markdown.vim
+"----vimwiki----"
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+"-----vim-table-mode----"
+let g:table_mode_corner='|'
+
 
 
 "----startify----"
@@ -352,4 +375,25 @@ let g:startify_lists = [
 \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
 \ { 'type': 'commands',  'header': ['   Commands']       },
 \ ]
+"----解决中文输入法切换的问题----"
+let g:input_toggle = 0
+function! Fcitx2en()
+   let s:input_status = system("fcitx-remote")
+   if s:input_status == 2
+      let g:input_toggle = 1
+      let l:a = system("fcitx-remote -c")
+   endif
+endfunction
+
+function! Fcitx2zh()
+   let s:input_status = system("fcitx-remote")
+   if s:input_status != 2 && g:input_toggle == 1
+      let l:a = system("fcitx-remote -o")
+      let g:input_toggle = 0
+   endif
+endfunction
+
+set timeoutlen=150
+autocmd InsertLeave * call Fcitx2en()
+autocmd InsertEnter * call Fcitx2zh()
 
