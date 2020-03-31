@@ -13,9 +13,9 @@ syntax on
 syntax enable
 "----vim的基本键位配置----"
 set nocompatible
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
 set autoindent
 set smartindent
 set cindent
@@ -48,6 +48,8 @@ map J 5j
 map <LEADER><CR> :nohlsearch<CR>
 noremap = nzz
 noremap - Nzz
+noremap > >>
+noremap < <<
 "----search <--> and change the content in <-->
 map <LEADER><LEADER> <Esc>/<--><CR>:nohlsearch<CR>c4l
 "----分屏的操作----"
@@ -93,10 +95,10 @@ Plug 'mbbill/undotree/'
 Plug 'preservim/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'
+Plug 'ycm-core/YouCompleteMe'
 "----fzf----"
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': './install --bin' }
-Plug 'shougo/neocomplete.vim'     
 Plug 'luochen1990/rainbow'
 Plug 'godlygeek/tabular'
 
@@ -104,6 +106,8 @@ Plug 'godlygeek/tabular'
 Plug 'connorholyday/vim-snazzy'
 Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
 Plug 'sheerun/vim-polyglot'
+Plug 'ajmwagar/vim-deus'
+Plug 'nathanaelkane/vim-indent-guides'
 
 "----代码片段----"
 Plug 'SirVer/ultisnips'
@@ -111,9 +115,8 @@ Plug 'honza/vim-snippets'
 
 "----markdown----"
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle' }
 Plug 'vimwiki/vimwiki'
-Plug 'dhruvasagar/vim-table-mode'
-"Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 call plug#end()
 
 
@@ -122,87 +125,44 @@ call plug#end()
 "let g:SnazzyTransparent = 1
 set termguicolors
 set background=dark
-let g:gruvbox_material_background = 'soft'
-colorscheme gruvbox-material
+"let g:gruvbox_material_background = 'soft'
+"colorscheme gruvbox-material
 let g:airline_theme = 'gruvbox_material'
+colorscheme deus
+let g:deus_termcolors=256
 
+"----indent-guides----"
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_color_change_percent = 1
+silent! unmap <LEADER>ig
+autocmd WinEnter * silent! unmap <LEADER>ig
+					
 
 "----Ultinsnips代码片段----"
-let g:UltiSnipsExpandTrigger="<tab>"
-" 使用 tab 切换下一个触发点，shit+tab 上一个触发点
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
+let g:UltiSnipsExpandTrigger="<c-j>"
+" 使用 <c-e> 切换下一个触发点，shit+<c-e> 上一个触发点
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " 使用 UltiSnipsEdit 命令时垂直分割屏幕
 let g:UltiSnipsEditSplit="vertical"
 
 "----Undotree----"
 let g:undotree_DiffAutoOpen = 0
 map L :UndotreeToggle<CR>
-
-"----neocomplete-----"
-"Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1 
-"Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 3
-
-
-" Define keyword.
-  if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-" Plugin key-mappings.
-inoremap <expr><C-g>     neocomplete#undo_completion()
-inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? "\<C-y>" : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" Close popup by <Space>.
-"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-
-" AutoComplPop like behavior.
-"let g:neocomplete#enable_auto_select = 1
-
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1
-"let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" Enable heavy omni completion.
-if !exists('g:neocomplete#sources#omni#input_patterns')
-  let g:neocomplete#sources#omni#input_patterns = {}
-endif
-"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-
-
+let g:undotree_DiffAutoOpen = 1
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_ShortIndicators = 1
+let g:undotree_WindowLayout = 2
+let g:undotree_DiffpanelHeight = 8
+let g:undotree_SplitWidth = 24
+function g:Undotree_CustomMap()
+	nmap <buffer> j <plug>UndotreeNextState
+	nmap <buffer> K <plug>UndotreePreviousState
+	nmap <buffer> J 5<plug>UndotreeNextState
+	nmap <buffer> K 5<plug>UndotreePreviousState
+endfunc
 
 
 "----NERDTree文件目录----"
@@ -307,11 +267,6 @@ let g:airline#extensions#ale#enabled = 1
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
 
-" only enable these linters
-"let g:ale_linters = {
-"\    'javascript': ['eslint']
-"\}
-
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-J> <Plug>(ale_next_wrap)
 
@@ -319,8 +274,6 @@ nmap <silent> <C-J> <Plug>(ale_next_wrap)
 " let g:ale_lint_on_text_changed = 'never'
 " dont run lint on opening a file
 " let g:ale_lint_on_enter = 0
-
-
 
 
 
@@ -362,10 +315,10 @@ source ~/.vim/Markdown.vim
 "----vimwiki----"
 let g:vimwiki_list = [{'path': '~/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
-"-----vim-table-mode----"
-let g:table_mode_corner='|'
 
-
+"----vim-table-mode----"
+noremap <LEADER>tm :TableModeToggle<CR>
+let g:table_mode_cell_text_object_i_map = 'k<Bar>'
 
 "----startify----"
 let g:startify_lists = [
@@ -392,8 +345,21 @@ function! Fcitx2zh()
       let g:input_toggle = 0
    endif
 endfunction
-
-set timeoutlen=150
+set ttimeoutlen=50
 autocmd InsertLeave * call Fcitx2en()
 autocmd InsertEnter * call Fcitx2zh()
+
+
+
+"----Youcompleteme----"
+let g:ycm_complete_in_strings = 1
+let g:ycm_seed_identifiers_with_syntax = 0
+let g:ycm_autoclose_preview_window_after_completion=0
+let g:ycm_autoclose_preview_window_after_insertion=1
+let g:ycm_use_clangd = 0
+
+
+
+
+
 
