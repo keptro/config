@@ -309,8 +309,6 @@ let g:mkdp_markdown_css = ''
 let g:mkdp_highlight_css = ''
 let g:mkdp_port = ''
 let g:mkdp_page_title = '「${name}」'
-map <LEADER>p :MarkdownPreviewStop<CR>
-map <LEADER>m :MarkdownPreview<CR>
 source ~/.vim/Markdown.vim
 "----vimwiki----"
 let g:vimwiki_list = [{'path': '~/vimwiki/',
@@ -350,6 +348,22 @@ autocmd InsertLeave * call Fcitx2en()
 autocmd InsertEnter * call Fcitx2zh()
 
 
+" Compile function
+noremap r :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+	exec "w"
+	if &filetype == 'c'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		set splitbelow
+		:term python3 %
+	elseif &filetype == 'markdown'
+		exec "MarkdownPreview"
+	endif
+endfunc
 
 "----Youcompleteme----"
 let g:ycm_complete_in_strings = 1
@@ -358,6 +372,10 @@ let g:ycm_autoclose_preview_window_after_completion=0
 let g:ycm_autoclose_preview_window_after_insertion=1
 let g:ycm_use_clangd = 0
 
+
+" set Vim-specific sequences for RGB colors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 
 
