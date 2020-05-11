@@ -32,6 +32,7 @@ set list
 set listchars=tab:\ \ ,trail:▫
 map <LEADER>sr :%s/
 vnoremap <LEADER>sr :s/
+vnoremap <LEADER>t= :Tabularize /= <CR>
 "----改变光标样式----"
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_SR = "\<Esc>]50;CursorShape=2\x7"
@@ -90,6 +91,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'vim-airline/vim-airline'
 Plug 'w0rp/ale'
 Plug 'mhinz/vim-startify'
+Plug 'jiangmiao/auto-pairs'
 
 Plug 'mbbill/undotree/'
 Plug 'preservim/nerdtree'
@@ -107,6 +109,7 @@ Plug 'connorholyday/vim-snazzy'
 Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
 Plug 'sheerun/vim-polyglot'
 Plug 'ajmwagar/vim-deus'
+Plug 'rakr/vim-one/'
 Plug 'nathanaelkane/vim-indent-guides'
 
 "----代码片段----"
@@ -127,7 +130,7 @@ set termguicolors
 set background=dark
 "let g:gruvbox_material_background = 'soft'
 "colorscheme gruvbox-material
-let g:airline_theme = 'gruvbox_material'
+let g:airline_theme = 'one'
 colorscheme deus
 let g:deus_termcolors=256
 
@@ -154,7 +157,7 @@ map L :UndotreeToggle<CR>
 let g:undotree_DiffAutoOpen = 1
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_ShortIndicators = 1
-let g:undotree_WindowLayout = 2
+let g:undotree_WindowLayout = 4
 let g:undotree_DiffpanelHeight = 8
 let g:undotree_SplitWidth = 24
 function g:Undotree_CustomMap()
@@ -309,6 +312,7 @@ let g:mkdp_markdown_css = ''
 let g:mkdp_highlight_css = ''
 let g:mkdp_port = ''
 let g:mkdp_page_title = '「${name}」'
+map <LEADER>m <Plug>MarkdownPreview
 source ~/.vim/Markdown.vim
 "----vimwiki----"
 let g:vimwiki_list = [{'path': '~/vimwiki/',
@@ -349,11 +353,11 @@ autocmd InsertEnter * call Fcitx2zh()
 
 
 " Compile function
-noremap r :call CompileRunGcc()<CR>
+map r :call CompileRunGcc()<CR>
 func! CompileRunGcc()
 	exec "w"
 	if &filetype == 'c'
-		exec "!g++ % -o %<"
+		exec "!gcc % -o %<"
 		exec "!time ./%<"
 	elseif &filetype == 'sh'
 		:!time bash %
@@ -361,7 +365,9 @@ func! CompileRunGcc()
 		set splitbelow
 		:term python3 %
 	elseif &filetype == 'markdown'
-		exec "MarkdownPreview"
+    exec "MarkdownPreview"
+	elseif &filetype == 'vimwiki'
+    exec "MarkdownPreview"
 	endif
 endfunc
 
@@ -373,7 +379,7 @@ let g:ycm_autoclose_preview_window_after_insertion=1
 let g:ycm_use_clangd = 0
 
 
-" set Vim-specific sequences for RGB colors
+" set Vim-specific sequences for RGB colors 让st终端显示vim配色
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
